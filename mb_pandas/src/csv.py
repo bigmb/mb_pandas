@@ -161,7 +161,7 @@ async def read_csv_asyn(filepath, show_progress=False, context_vars: dict = {}, 
 
     fp1 = filepath
     data1 = await read_text(fp1, context_vars=context_vars)
-    meta_filepath = os.path.basename(filepath)[:-4]+'.meta' #can use os
+    meta_filepath = os.path.basename(filepath)[:-4]+'.meta'
     if os.path.exists(meta_filepath):
         data2 = await read_text(meta_filepath, context_vars=context_vars)
     else:

@@ -13,13 +13,7 @@ async def load_df_async(file_path, show_progress=False, context_vars={}):
     Load pandas dataframe from csv file
     """
     df_filepath = file_path.lower()
-    df = await read_csv_asyn(
-            df_filepath,
-            *args,
-            show_progress=show_progress,
-            context_vars=context_vars,
-            **kwargs
-        )
+    df = await read_csv_asyn(df_filepath,*args,show_progress=show_progress,context_vars=context_vars,**kwargs)
 
     return df
 
