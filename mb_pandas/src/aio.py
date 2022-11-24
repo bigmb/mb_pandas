@@ -1,6 +1,7 @@
 import asyncio
+import aiofiles 
 
-__all__ = ['srun']
+__all__ = ['srun','read_text']
 
 def srun(async_func, *args,extra_context_var: dict={} ,show_progress=False, **kwargs) -> object:
     """
@@ -22,3 +23,30 @@ def srun(async_func, *args,extra_context_var: dict={} ,show_progress=False, **kw
         core.close()
     except StopIteration as e:
         return e.value
+
+
+async def read_text(filepath, size: int = None, context_vars: dict = {}) -> str:
+    """An asyn function that opens a text file and reads the content.
+    Parameters
+    ----------
+    filepath : str
+        path to the file
+    size : int
+        size to read from the beginning of the file, in bytes. If None is given, read the whole
+        file.
+    context_vars : dict
+        a dictionary of context variables within which the function runs. It must include
+        `context_vars['async']` to tell whether to invoke the function asynchronously or not.
+    Returns
+    -------
+    str
+        the content read from file
+    """
+
+    if context_vars["async"]:
+        async with aiofiles.open(filepath, mode="rt") as f:
+            return await f.read(size)
+    else:
+        with open(filepath, mode="rt") as f:
+            return f.read(size)
+

@@ -1,5 +1,60 @@
 import pandas as pd
 import tqdm
+import csv as _csv
+import io
+import json
+import os
+from halo import Halo
+import numpy as np
+from contextlib import nullcontext
+from .threading import ReadWriteLock,WriteRWLock,ReadRWLock, Lock
+from os.path import *
+from pathlib import Path
+from typing import Union
+from .aio import read_text
+
+dummy_scope = nullcontext()
+
+def lock(path: Union[Path, str], to_write: bool = False):
+    """Returns the current MROW lock for a given path.
+    Parameters
+    ----------
+    path : str
+        local path
+    to_write : bool
+        whether lock to write or to read
+    Returns
+    -------
+    lock : ReadRWLock or WriteRWLock
+        an instance of WriteRWLock if to_write is True, otherwise an instance of ReadRWLock
+    """
+    with lock.__lock0:
+        # get the current lock, or create one if it needs be
+        if not path in lock.__locks:
+            # check if we need to cleanup
+            lock.__cleanup_cnt += 1
+            if lock.__cleanup_cnt >= 1024:
+                lock.__cleanup_cnt = 0
+
+                # accumulate those locks that are unlocked
+                removed_paths = []
+                for x in lock.__locks:
+                    if lock.__locks[x].is_free():
+                        removed_paths.append(x)
+
+                # remove them
+                for x in removed_paths:
+                    lock.__locks.pop(x, None)
+
+            # create a new lock
+            lock.__locks[path] = ReadWriteLock()
+
+        return (
+            WriteRWLock(lock.__locks[path])
+            if to_write
+            else ReadRWLock(lock.__locks[path])
+        )
+
 
 async def read_csv_asyn(filepath, show_progress=False, context_vars: dict = {}, **kwargs):
 
@@ -103,25 +158,12 @@ async def read_csv_asyn(filepath, show_progress=False, context_vars: dict = {}, 
         return postprocess(df)
 
     # make sure we do not concurrently access the file
-    with path.lock(filepath, to_write=False):
-        if filepath.lower().endswith('.csv.zip'):
-            data = await aio.read_binary(filepath, context_vars=context_vars)
-            with _zf.ZipFile(io.BytesIO(data), mode='r') as myzip:
-                filename = path.basename(filepath)[:-4]
-                fp1 = myzip.open(filename, mode='r', force_zip64=True)
-                data1 = fp1.read().decode()
-                meta_filename = filename[:-4]+'.meta'
-                if meta_filename in myzip.namelist():
-                    data2 = myzip.open(meta_filename, mode='r').read()
-                else:
-                    data2 = None
-                return process(filepath, data1, data2, show_progress=show_progress, **kwargs)
-        else:
-            fp1 = filepath
-            data1 = await aio.read_text(fp1, context_vars=context_vars)
-            meta_filepath = path.basename(filepath)[:-4]+'.meta'
-            if path.exists(meta_filepath):
-                data2 = await aio.read_text(meta_filepath, context_vars=context_vars)
-            else:
-                data2 = None
-            return process(filepath, io.StringIO(data1), data2, show_progress=show_progress, **kwargs)
+
+    fp1 = filepath
+    data1 = await read_text(fp1, context_vars=context_vars)
+    meta_filepath = os.path.basename(filepath)[:-4]+'.meta' #can use os
+    if os.path.exists(meta_filepath):
+        data2 = await read_text(meta_filepath, context_vars=context_vars)
+    else:
+        data2 = None
+    return process(filepath, io.StringIO(data1), data2, show_progress=show_progress, **kwargs)
