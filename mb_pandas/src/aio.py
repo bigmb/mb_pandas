@@ -3,7 +3,7 @@ import aiofiles
 
 __all__ = ['srun','read_text']
 
-def srun(async_func, *args,extra_context_var: dict={} ,show_progress=False, **kwargs) -> object:
+def srun(async_func, *args,extra_context_var: dict={} ,show_progress=False, **kwargs):
     """
     Run asyncio function in synchronous way
     Input:
