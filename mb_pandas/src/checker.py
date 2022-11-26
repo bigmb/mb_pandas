@@ -5,9 +5,9 @@ import os
 from .dfload import load_any_df
 from mb_utils.src.logging import logger
 
-__all__ = ['check_file']
+__all__ = ['check_null']
 
-def check_file(file_path,fillna=False,logger=logger) -> pd.DataFrame:
+def check_null(file_path,fillna=False,logger=logger) -> pd.DataFrame:
     """
     Pandas file checker. Checks Null values
     Input: 
@@ -37,3 +37,5 @@ def check_file(file_path,fillna=False,logger=logger) -> pd.DataFrame:
                 else:
                     logger.info('Going to next column')
     
+    return df
+
