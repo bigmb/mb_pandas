@@ -42,7 +42,7 @@ def load_any_df(file_path, *args,show_progress=True,**kwargs):
     try:
         df = load_df(file_path, *args,show_progress=show_progress,**kwargs)
     except:
-        df = pd.read_csv(file_path, *args,**kwargs)
+        df = pd.read_csv(file_path, *args,index_col=0,**kwargs)
         #df = pd.concat([chunk for chunk in tqdm(pd.read_csv(file_path), desc='Loading data')])
 
     return df
