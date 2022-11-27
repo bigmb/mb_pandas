@@ -33,6 +33,8 @@ def create_profile(df,profile_name='./pandas_profiling_report.html',minimal=Fals
             logger.info(f'tagets: {target}')
             assert all([t in df.columns for t in target]), logger.info('Target column not in dataframe')
         profile.config.interactions.targets = target
+    else:
+        profile.config.interactions.targets = df.columns
     profile.to_file(output_file=profile_name)
     if logger:
         logger.info(f'Pandas profiling report created: {profile_name}')

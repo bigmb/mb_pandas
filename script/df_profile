@@ -5,15 +5,28 @@
 
 import os
 import sys
-from mb_pandas.src import dfload
+from mb_pandas.src import dfload,profiler
 from mb_utils.src.logging import logger
 import argparse
 
 #get file
 #make a new folder
 
-def main():
-    df = dfload.load_any_df(args.filepath,logger=logger)
+
+
+def main(args,logger=logger):
+    logger.info("Starting loading dataframe from file: '{}'.".format(args.df_filepath))
+    df = dfload.load_any_df(args.df_filepath)
+    target=args.target if len(args.target)>0 else []
+
+    logger.info("Target columns: {}".format(target))
+    loc = args.folder_name + args.file_name
+    if not os.path.exists(args.folder_name):
+        os.makedir(args.folder_name)
+        logger.info("Folder created: {}".format(args.folder_name))
+    logger.info("Saving profile to: '{}'.".format(loc))
+    profiler.create_profile(df, loc, logger=logger)
+    logger.info("Profile saved to: '{}'.".format(loc))
 
 
 
@@ -21,6 +34,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="Gets the profile of the dataframe and saves it in the local folder.")
     parser.add_argument("-f","df_filepath", type=str, help="Filepath to the input dataframe.")
-    parser.add_argument("-p","file_name", type=str, help="File name to save the profile.")
-    parser.add_argument("-l","logger", type=bool , help="Logger to print.")
+    parser.add_argument("-p","file_name", type=str,default='profile.html', help="File name to save the profile.")
+    parser.add_argument("-b","folder_name", type=str,default='/home/malav/', help="Folder to store all the profiles.")
+    parser.add_argument("-l","target", type=list , default=[] ,help="List of columns to be profiled.")
+    parser.add_argument("-m","minimal", type=bool ,default=False, help="minimal data to be profiled.")
     args = parser.parse_args()
