@@ -6,6 +6,21 @@
 import os
 import sys
 from mb_pandas.src import dfload
+from mb_utils.src.logging import logger
+import argparse
+
+#get file
+#make a new folder
+
+def main():
+    df = dfload.load_any_df(args.filepath,logger=logger)
 
 
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="Gets the profile of the dataframe and saves it in the local folder.")
+    parser.add_argument("-f","df_filepath", type=str, help="Filepath to the input dataframe.")
+    parser.add_argument("-p","file_name", type=str, help="File name to save the profile.")
+    parser.add_argument("-l","logger", type=bool , help="Logger to print.")
+    args = parser.parse_args()
