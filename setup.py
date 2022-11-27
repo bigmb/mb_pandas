@@ -10,7 +10,7 @@ setup(
     author=["Malav Bateriwala"],
     packages=find_namespace_packages(include=["mb_pandas.*"]),
     #packages=find_packages(),
-    scripts=['scripts/df_profile','scripts/df_convert_csv_parquet','scripts/df_view'],
+    scripts=['scripts/df_profile','scripts/df_view'],
     install_requires=[
         "numpy",
         "pandas",
