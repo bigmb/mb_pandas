@@ -39,3 +39,4 @@ if __name__ == '__main__':
     parser.add_argument("-l","target", type=list , default=[] ,help="List of columns to be profiled.")
     parser.add_argument("-m","minimal", type=bool ,default=False, help="minimal data to be profiled.")
     args = parser.parse_args()
+    main(args)
