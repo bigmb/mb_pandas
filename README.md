@@ -26,4 +26,4 @@ Scripts:
 
 Pip install :
 
-    pip install mb-pandas==1.0.202211280400
+    pip install mb-pandas
