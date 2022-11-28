@@ -1,7 +1,6 @@
 # mb_pandas
 
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-[![forthebadge](https://forthebadge.com/images/badges/built-by-neckbeards.svg)](https://github.com/bigmb)
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bigmb/mb_pandas/graphs/commit-activity)
 
