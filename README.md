@@ -5,7 +5,7 @@
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bigmb/mb_pandas/graphs/commit-activity)
 
-[![HitCount](http://hits.dwyl.io/bigmb/mb_pandas.svg)](http://hits.dwyl.io/bigmb/mb_pandas)
+[![HitCount](https://hitcounter.pythonanywhere.com/count/tag.svg)](http://hits.dwyl.io/bigmb/mb_pandas)
 
 Personal addition to pandas package for faster and better performance of data wrangling. 
 
