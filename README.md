@@ -23,3 +23,7 @@ Main functions:
 Scripts:
 
     1) df_profile - to create profile for any df. (default folder : /home/malav/pandas_profiles/)
+
+Pip install :
+
+    pip install mb-pandas==1.0.202211280400
