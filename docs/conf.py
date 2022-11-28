@@ -17,12 +17,12 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'mtpandas'
-copyright = '2020, Minh-Tri Pham'
-author = 'Minh-Tri Pham'
+project = 'mb_pandas'
+copyright = '2022, Malav'
+author = 'Malav'
 
 # The full version, including alpha/beta/rc tags
-from mt.pandas.version import VERSION
+from mb_pandas.src.version import VERSION
 release = VERSION
 
 
