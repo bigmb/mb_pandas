@@ -69,6 +69,7 @@ def rename_columns(df,new_column,old_column,logger=None):
     if old_column not in df.columns:
         if logger:
             logger.warning(f'Column {old_column} not in dataframe')
+            assert old_column in df.columns, f'Column {old_column} not in dataframe'
         return df
     df = df.rename(columns={old_column:new_column})
     if logger:
