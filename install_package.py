@@ -1,4 +1,6 @@
-#!/usr/bin/env python3.9
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 
 import os
 import subprocess
@@ -14,5 +16,6 @@ if os.path.exists(file+'/dist'):
 os.system("ls")
 subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE).stdout
 #os.system('git pull')
-os.system('python3.9 -m setup bdist_wheel')
-os.system('python3.9 -m pip install '+file + '/dist/' +os.listdir(file +'/dist')[-1])
+os.system('python3.8 -m setup bdist_wheel')
+os.system('python3.8 -m pip install '+file + '/dist/' +os.listdir(file +'/dist')[-1])
+os.system('python3.8 -m twine upload dist/*')
