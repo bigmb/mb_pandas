@@ -26,4 +26,4 @@ Scripts:
 
 Pip install :
 
-    pip install mb-pandas
+    pip install mb_pandas
