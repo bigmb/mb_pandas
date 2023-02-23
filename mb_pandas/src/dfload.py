@@ -42,7 +42,7 @@ def load_any_df(file_path,show_progress=True,logger = None):
     """
     Loading any pandas dfload function
     Input: 
-        file_path (csv): path to csv file
+        file_path (csv): path to csv file/parquet file
         show_progress (bool): show progress bar
     Output:
         df (pd.DataFrame): pandas dataframe
@@ -52,7 +52,12 @@ def load_any_df(file_path,show_progress=True,logger = None):
         if logger:
             logger.info("Loaded dataframe from {} using asyncio".format(file_path))
     except:
-        df = pd.read_csv(file_path, index_col=0)
+        if file_path.endswith('.csv'):
+            df = pd.read_csv(file_path, index_col=0)
+        elif file_path.endswith('.parquet'):
+            df = pd.read_parquet(file_path)
+        else:
+            raise ValueError("File type not supported")
         if logger:
             logger.info("Loaded dataframe from {} using pandas".format(file_path))
     return df
