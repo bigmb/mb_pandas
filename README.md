@@ -23,6 +23,7 @@ Main functions:
 Scripts:
 
     1) df_profile - to create profile for any df. (default folder : /home/malav/pandas_profiles/)
+    2) df_view - to view the csv or parquet file
 
 Pip install :
 

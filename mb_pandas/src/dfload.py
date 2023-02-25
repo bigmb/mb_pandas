@@ -61,7 +61,7 @@ async def load_df_new_parquet(fp,show_progress=False):
     data1 = await read_txt(fp) 
     return process(fp , io.StringIO(data1)) 
 
-def load_any_df(file_path,show_progress=True,logger = None):
+def load_any_df(file_path,show_progress=True,max_rows=None, logger = None):
     """
     Loading any pandas dfload function
     Input: 
