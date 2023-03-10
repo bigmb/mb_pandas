@@ -86,6 +86,7 @@ def load_any_df(file_path,show_progress=True,max_rows=None, logger = None):
             raise ValueError("File type not supported")
         if logger:
             logger.info("Loaded dataframe from {} using pandas".format(file_path))
-    df = df.reset_index(drop=True)
+    #df = df.reset_index(drop=True)
+    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
     return df
 
