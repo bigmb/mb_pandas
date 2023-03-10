@@ -88,7 +88,7 @@ def check_drop_duplicates(df,columns,drop=False,logger=None):
     """
     if logger:
         logger.info('Checking duplicates for the columns: {}'.format(columns))
-    df_warn = df[df.duplicates(columns,keep=False)]
+    df_warn = df[df.duplicated(columns,keep=False)]
     if len(df_warn)> 0 and drop==True:
         if logger:
             logger.warning('Duplicates found')
