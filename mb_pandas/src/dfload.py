@@ -62,12 +62,14 @@ async def load_df_new_parquet(fp,show_progress=False):
     data1 = await read_txt(fp) 
     return process(fp , io.StringIO(data1)) 
 
-def load_any_df(file_path,show_progress=True,max_rows=None,literal_ast_columns=None ,logger = None):
+def load_any_df(file_path,show_progress=True,literal_ast_columns=None ,logger = None):
     """
     Loading any pandas dfload function
     Input: 
         file_path (csv): path to csv file/parquet file
         show_progress (bool): show progress bar
+        literal_ast_columns (list): columns to be converted to literal ast
+        logger (logger): logger object
     Output:
         df (pd.DataFrame): pandas dataframe
     """
@@ -83,9 +85,11 @@ def load_any_df(file_path,show_progress=True,max_rows=None,literal_ast_columns=N
     
     #df = df.reset_index(drop=True)
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-    if len(literal_ast_columns)>0:
-        for col in literal_ast_columns:
-            assert col in df.columns, f'{col} not in dataframe columns'
-            df[col] = df.col.apply(lambda x: literal_eval(x))
+    if literal_ast_columns:
+        for i in range(len(literal_ast_columns)):
+            assert literal_ast_columns[i] in df.columns, f'{literal_ast_columns[i]} not in dataframe columns'
+            if logger:
+                logger.info("Converting {} to literal ast".format(literal_ast_columns[i]))
+            df[literal_ast_columns[i]] = df[literal_ast_columns[i]].apply(lambda x: literal_eval(x))
     return df
 

@@ -18,3 +18,6 @@ def convert_string_to_list(df,column,logger =None):
 
     df_l = list(df['columns'])
     df_l2 = [ast.literal_eval(i) for i in range(len(df_l))]
+    df2 = df.copy()
+    df2['columns'] = df_l2
+    return df2
