@@ -5,6 +5,7 @@ import os
 import asyncio
 import io
 from tqdm import tqdm
+from ast import literal_eval
 
 __all__ = ['load_df_new','load_any_df']
 
@@ -61,7 +62,7 @@ async def load_df_new_parquet(fp,show_progress=False):
     data1 = await read_txt(fp) 
     return process(fp , io.StringIO(data1)) 
 
-def load_any_df(file_path,show_progress=True,max_rows=None, logger = None):
+def load_any_df(file_path,show_progress=True,max_rows=None,literal_ast_columns=None ,logger = None):
     """
     Loading any pandas dfload function
     Input: 
@@ -82,5 +83,9 @@ def load_any_df(file_path,show_progress=True,max_rows=None, logger = None):
     
     #df = df.reset_index(drop=True)
     df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    if len(literal_ast_columns)>0:
+        for col in literal_ast_columns:
+            assert col in df.columns, f'{col} not in dataframe columns'
+            df[col] = df.col.apply(lambda x: literal_eval(x))
     return df
 
