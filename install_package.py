@@ -9,9 +9,11 @@ file = '/home/malav/mb_pandas'
 #subprocess.run(["cd",file]), check=True, stdout=subprocess.PIPE).stdout
 os.system('cd ' + file)
 
+os.system('./make_version.sh')
+
 if os.path.exists(file+'/dist'):
-    os.system('rm -rf '+file+'/dist')
-    os.system('rm -rf '+file+'/build')
+    os.system('sudo rm -rf '+file+'/dist')
+    os.system('sudo rm -rf '+file+'/build')
 #subprocess.run(["ls"]),check=True, stdout=subprocess.PIPE).stdout
 os.system("ls")
 subprocess.run(["git", "pull"], check=True, stdout=subprocess.PIPE).stdout

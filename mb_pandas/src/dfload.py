@@ -27,7 +27,7 @@ async def load_df_new(fp,show_progress=False):
         if show_progress:
             bar = tqdm(unit='row') 
         dfs=[] 
-        for df in pd.read_csv(data1,chunksize=1024): 
+        for df in pd.read_csv(data1,chunksize=1024,engine='pyarrow'): 
             dfs.append(df) 
             if show_progress:
                 bar.update(len(df))
@@ -51,7 +51,7 @@ async def load_df_new_parquet(fp,show_progress=False):
         if show_progress:
             bar = tqdm(unit='row') 
         dfs=[] 
-        for df in pd.read_parquet(data1,chunksize=1024): 
+        for df in pd.read_parquet(data1,chunksize=1024,engine='pyarrow',encoding='latin-1'): 
             dfs.append(df) 
             if show_progress:
                 bar.update(len(df))
