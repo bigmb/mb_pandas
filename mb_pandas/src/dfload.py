@@ -51,13 +51,21 @@ async def load_df_new_parquet(fp,show_progress=False):
         if show_progress:
             bar = tqdm(unit='row') 
         dfs=[] 
-        for df in pd.read_parquet(data1,chunksize=1024,encoding='ISO-8859-1'): 
-            dfs.append(df) 
+        try:
+            for df in pd.read_parquet(data1,chunksize=1024): 
+                dfs.append(df) 
+                if show_progress:
+                    bar.update(len(df))
+            df = pd.concat(dfs,sort=False) 
             if show_progress:
-                bar.update(len(df))
-        df = pd.concat(dfs,sort=False) 
-        if show_progress:
-            bar.close()
+                bar.close()
+        except:
+            from pyarrow.parquet import ParquetFile
+            import pyarrow as pa
+
+            pf = ParquetFile(data1)
+            rows = next(pf.iter_batches(batch_size=1000))
+            df = pa.Table.from_batches([rows]).to_pandas()
         return df 
     data1 = await read_txt(fp) 
     return process(fp , io.StringIO(data1)) 
