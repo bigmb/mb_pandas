@@ -82,9 +82,9 @@ def load_any_df(file_path,show_progress=True,literal_ast_columns=None ,logger = 
         df (pd.DataFrame): pandas dataframe
     """
     try:
-        if file_path.endswith('.csv'):
+        if file_path.str.endswith('.csv'):
             df = asyncio.run(load_df_new(file_path,show_progress=show_progress))
-        elif file_path.endswith('.parquet'):
+        elif file_path.str.endswith('.parquet'):
             df = asyncio.run(load_df_new_parquet(file_path,show_progress=show_progress))
         if logger:
             logger.info("Loaded dataframe from {} using asyncio".format(file_path))
