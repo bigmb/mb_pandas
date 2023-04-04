@@ -128,7 +128,7 @@ def get_dftype(s):
         return 'object'
 
     dftype = None
-    for x in s.tolist():
+    for x in list(s):
         if isinstance(x, str):
             if dftype is None:
                 dftype = 'str'
