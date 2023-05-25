@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 from setuptools import setup,find_packages,find_namespace_packages
 from mb_pandas.src.version import version
 

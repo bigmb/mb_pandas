@@ -1,4 +1,3 @@
-import asyncio
 import aiofiles 
 
 __all__ = ['srun','read_text']

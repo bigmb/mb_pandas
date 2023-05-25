@@ -1,18 +1,18 @@
 import ast
-from mb_utils.src.logging import logger
 import pandas as pd
 
 
 __all__ = ['convert_string_to_list']
 
-def convert_string_to_list(df,column,logger =None):
+def convert_string_to_list(df,logger =None):
     """
-    Input
-    df (pd.DataFrame): pandas dataframe
-    column (str): column name
-    logger (logger): logger
+    Convert string to list data of a column
     
-    OutPut:
+    Input:
+        df (pd.DataFrame): pandas dataframe
+        logger (logger): logger
+    
+    Output:
         df (pd.DataFrame): pandas dataframe
     """
 

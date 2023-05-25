@@ -1,6 +1,5 @@
 ##pandas file profilier functions
 import pandas as pd
-from mb_utils.src.logging import logger
 
 __all__ = ['create_profile','profile_compare']
 
