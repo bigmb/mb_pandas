@@ -81,6 +81,8 @@ def load_any_df(file_path,show_progress=True,literal_ast_columns=None ,logger = 
     Output:
         df (pd.DataFrame): pandas dataframe
     """
+    if type(file_path) == pd.DataFrame:
+        return file_path
     try:
         if file_path.endswith('.csv'):
             df = asyncio.run(load_df_new(file_path,show_progress=show_progress))
