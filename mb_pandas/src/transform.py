@@ -6,11 +6,9 @@ from .dfload import load_any_df
 from mb_utils.src.logging import logger
 import numpy as np
 import cv2
-from mb_utils.src.extra import timer
 
 __all__ = ['check_null','remove_unnamed','rename_columns','check_drop_duplicates','get_dftype','merge_chunk']
 
-@timer
 def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
     """
     Merging 2 DataFrames in chunks
@@ -25,12 +23,23 @@ def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
     """
     if df1.shape[0] > df2.shape[0]:
         df1,df2 = df2,df1
+
+    merge_on = set(df1.columns) & set(df2.columns)
+    if not merge_on:
+        raise ValueError("No common columns to merge on") 
     
     list_df = [df2[i:i+chunksize] for i in range(0, df2.shape[0],chunksize)]
+    if logger:
+        logger.info(f'Size of chunk: {chunksize}')
+        logger.info(f'Number of chunks: {len(list_df)}')
+    
     res = pd.DataFrame() 
 
     for chunk in list_df:
-        res = pd.concat([res, df1.merge(chunk,**kwargs)])
+        merged_chunk = pd.merge(df1,chunk,**kwargs)
+        res = pd.concat([res, merged_chunk])
+    
+    res = res.reset_index(drop=True)
     return res
     
 
