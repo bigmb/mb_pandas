@@ -33,14 +33,23 @@ def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
         logger.info(f'Size of chunk: {chunksize}')
         logger.info(f'Number of chunks: {len(list_df)}')
     
-    res = pd.DataFrame() 
+    merged_chunks = []
 
     for chunk in list_df:
-        merged_chunk = pd.merge(df1,chunk,**kwargs)
-        res = pd.concat([res, merged_chunk])
-    
+        merged_chunk = pd.merge(df1, chunk, **kwargs)
+        merged_chunks.append(merged_chunk)
+
+    res = pd.DataFrame() 
+    res = pd.concat(merged_chunks)
     res = res.reset_index(drop=True)
-    return res
+    return res    
+    
+    # for chunk in list_df:
+    #     merged_chunk = pd.merge(df1,chunk,**kwargs)
+    #     res = pd.concat([res, merged_chunk])
+    
+    # res = res.reset_index(drop=True)
+    # return res
     
 
 def check_null(file_path,fillna=False,logger=None) -> pd.DataFrame:
