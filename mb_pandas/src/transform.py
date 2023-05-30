@@ -7,7 +7,31 @@ from mb_utils.src.logging import logger
 import numpy as np
 import cv2
 
-__all__ = ['check_null','remove_unnamed','rename_columns','check_drop_duplicates','get_dftype']
+__all__ = ['check_null','remove_unnamed','rename_columns','check_drop_duplicates','get_dftype','merge_chuck']
+
+
+def merge_chuck(df1,df2,chunksize=10000,logger=None,**kwargs):
+    """
+    Merging 2 DataFrames in chunks
+    
+    Args:
+        df1 : First DataFrame
+        df2 : Second DataFrame
+        chunksize : chunksize to merge
+        logger : logger
+    Returns:
+        df : merged DataFrame
+    """
+    if df1.shape[0] > df2.shape[0]:
+        df1,df2 = df2,df1
+    
+    list_df = [df2[i:i+chunksize] for i in range(0, df2.shape[0],chunksize)]
+    res = pd.DataFrame() 
+
+    for chunk in list_df:
+        res = pd.concat([res, df1.merge(chunk,**kwargs)])
+    return res
+    
 
 def check_null(file_path,fillna=False,logger=None) -> pd.DataFrame:
     """
