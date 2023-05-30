@@ -39,9 +39,7 @@ def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
         merged_chunk = pd.merge(df1, chunk, **kwargs)
         merged_chunks.append(merged_chunk)
 
-    res = pd.DataFrame() 
-    res = pd.concat(merged_chunks)
-    res = res.reset_index(drop=True)
+    res = pd.concat(merged_chunks,ignore_index=True)
     return res    
     
     # for chunk in list_df:
