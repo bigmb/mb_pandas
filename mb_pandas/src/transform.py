@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 from mb_utils.src.extra import timer
 
-__all__ = ['check_null','remove_unnamed','rename_columns','check_drop_duplicates','get_dftype','merge_chuck']
+__all__ = ['check_null','remove_unnamed','rename_columns','check_drop_duplicates','get_dftype','merge_chunk']
 
 @timer
 def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
