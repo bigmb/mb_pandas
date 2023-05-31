@@ -7,7 +7,7 @@ from mb_utils.src.logging import logger
 import numpy as np
 import cv2
 
-__all__ = ['check_null','remove_unnamed','rename_columns','check_drop_duplicates','get_dftype','merge_chunk']
+__all__ = ['check_null','remove_unnamed','rename_columns','check_drop_duplicates','get_dftype','merge_chunk','merge_dask']
 
 def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
     """
