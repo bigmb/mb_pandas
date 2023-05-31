@@ -49,6 +49,31 @@ def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
     # res = res.reset_index(drop=True)
     # return res
     
+ 
+def merge_dusk(df1,df2,logger=None,**kwargs):
+    """
+    Use dusk to merge 2 DataFrames
+    
+    Args:
+        df1 : First DataFrame : pandas DataFrame
+        df2 : Second DataFrame :  pandas DataFrame
+    Returns:
+        df : merged DataFrame : pandas DataFrame
+    """
+    
+    import dask.dataframe as dd
+    
+    #Convert pandas DataFrames to Dask DataFrames
+    ddf1 = dd.from_pandas(df1, npartitions=2)
+    ddf2 = dd.from_pandas(df2, npartitions=2)
+
+    # Merge Dask DataFrames
+    merged_ddf = dd.merge(ddf1, ddf2, **kwargs)
+
+    # Compute the result and convert back to a pandas DataFrame
+    merged_df = merged_ddf.compute()
+    return merged_df
+    
 
 def check_null(file_path,fillna=False,logger=None) -> pd.DataFrame:
     """
