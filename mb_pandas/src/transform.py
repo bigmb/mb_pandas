@@ -50,9 +50,9 @@ def merge_chunk(df1,df2,chunksize=10000,logger=None,**kwargs):
     # return res
     
  
-def merge_dusk(df1,df2,logger=None,**kwargs):
+def merge_dask(df1,df2,logger=None,**kwargs):
     """
-    Use dusk to merge 2 DataFrames
+    Use dask to merge 2 DataFrames
     
     Args:
         df1 : First DataFrame : pandas DataFrame
@@ -63,6 +63,8 @@ def merge_dusk(df1,df2,logger=None,**kwargs):
     
     import dask.dataframe as dd
     
+    if logger:
+        logger.info('Converting pandas DataFrames to Dask DataFrames')
     #Convert pandas DataFrames to Dask DataFrames
     ddf1 = dd.from_pandas(df1, npartitions=2)
     ddf2 = dd.from_pandas(df2, npartitions=2)
@@ -72,6 +74,8 @@ def merge_dusk(df1,df2,logger=None,**kwargs):
 
     # Compute the result and convert back to a pandas DataFrame
     merged_df = merged_ddf.compute()
+    if logger:
+        logger.info('Merged DataFrame and converted back to pandas DataFrame')
     return merged_df
     
 
