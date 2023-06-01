@@ -4,7 +4,7 @@
 
 import os
 import subprocess
-file = '/home/malav/mb_pandas'
+file = os.getcwd() 
 
 
 #subprocess.run(["cd",file]), check=True, stdout=subprocess.PIPE).stdout
