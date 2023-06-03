@@ -4,7 +4,7 @@
 
 import os
 import subprocess
-file = '/home/malav/mb_pandas'
+file = os.getcwd() 
 
 
 #subprocess.run(["cd",file]), check=True, stdout=subprocess.PIPE).stdout
@@ -34,12 +34,12 @@ if os.path.exists(file+'/dist'):
 #subprocess.run(["ls"]),check=True, stdout=subprocess.PIPE).stdout
 os.system("ls")
 
-os.system('python3.8 -m setup bdist_wheel')
+os.system('python3.10 -m setup bdist_wheel')
 
 print('*'*100)
 print('wheel built')
-os.system('python3.8 -m pip install '+file + '/dist/' +os.listdir(file +'/dist')[-1])
+os.system('python3.10 -m pip install '+file + '/dist/' +os.listdir(file +'/dist')[-1])
 
 print('package installed')
 print('*'*100)
-os.system('python3.8 -m twine upload dist/*')
+os.system('python3.10 -m twine upload dist/*')
