@@ -9,6 +9,7 @@
 
 Personal addition to pandas package for faster and better performance of data wrangling. 
 
+
 Main functions:
 
     1) pandas profile (from mb_pandas.src.profiler import create_profile)
@@ -28,3 +29,8 @@ Scripts:
 Pip install :
 
     pip install mb_pandas
+
+Load all the other packages with mb_base
+
+    pip install mb_base
+    import mb.pandas as pd 
