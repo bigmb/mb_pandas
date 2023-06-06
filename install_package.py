@@ -4,6 +4,16 @@
 
 import os
 import subprocess
+import sys
+
+py_version = sys.version
+print(py_version)
+if py_version[:4] == '3.10':
+    py_requires = '3.10'
+else:
+    py_requires = '3.8'
+print(py_requires)
+
 file = os.getcwd() 
 
 
@@ -34,7 +44,7 @@ if os.path.exists(file+'/dist'):
 #subprocess.run(["ls"]),check=True, stdout=subprocess.PIPE).stdout
 os.system("ls")
 
-os.system('python3.8 -m setup bdist_wheel')
+os.system(py_requires + ' -m setup bdist_wheel')
 
 print('*'*100)
 print('wheel built')
