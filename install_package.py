@@ -9,9 +9,9 @@ import sys
 py_version = sys.version
 print(py_version)
 if py_version[:4] == '3.10':
-    py_requires = '3.10'
+    py_requires = 'python 3.10'
 else:
-    py_requires = '3.8'
+    py_requires = 'python 3.8'
 print(py_requires)
 
 file = os.getcwd() 
