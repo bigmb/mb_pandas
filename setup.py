@@ -3,6 +3,13 @@
 
 from setuptools import setup,find_packages,find_namespace_packages
 from mb_pandas.src.version import version
+import sys
+
+py_version = sys.version
+if py_version[:4] == '3.10':
+    py_requires = '>=3.10'
+else:
+    py_requires = '>=3.8'
 
 setup(
     name="mb_pandas",
@@ -16,4 +23,4 @@ setup(
         "numpy",
         "pandas",
         "colorama",],
-    python_requires='>=3.8',)
+    python_requires=py_requires,)
