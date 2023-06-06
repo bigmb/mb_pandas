@@ -5,13 +5,12 @@
 
 import os
 from mb_pandas.src import dfload,profiler
-from mb_utils.src.logging import logger
 import argparse
 
 #get file
 #make a new folder
 
-def main(args,logger=logger):
+def main(args,logger=None):
     logger.info("Starting loading dataframe from file: '{}'.".format(args.df_filepath))
     df = dfload.load_any_df(args.df_filepath,logger=logger)
     target=args.target if len(args.target)>0 else []
