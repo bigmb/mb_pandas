@@ -1,7 +1,6 @@
 ##Pandas file checker
 
 import pandas as pd
-import os
 from .dfload import load_any_df
 from mb_utils.src.logging import logger
 import numpy as np

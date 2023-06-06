@@ -4,7 +4,6 @@
 ##This script is used to profile the dataframe and save it in the local folder.
 
 import os
-import sys
 from mb_pandas.src import dfload,profiler
 from mb_utils.src.logging import logger
 import argparse
