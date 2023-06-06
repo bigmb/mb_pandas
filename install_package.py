@@ -48,8 +48,8 @@ os.system(py_requires + ' -m setup bdist_wheel')
 
 print('*'*100)
 print('wheel built')
-os.system('python3.8 -m pip install '+file + '/dist/' +os.listdir(file +'/dist')[-1])
+os.system(py_requires + ' -m pip install '+file + '/dist/' +os.listdir(file +'/dist')[-1])
 
 print('package installed')
 print('*'*100)
-os.system('python3.8 -m twine upload dist/*')
+os.system(py_requires + ' -m twine upload dist/*')
