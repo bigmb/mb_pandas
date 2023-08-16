@@ -70,6 +70,54 @@ async def load_df_new_parquet(fp,show_progress=False):
     data1 = await read_txt(fp) 
     return process(fp , io.StringIO(data1)) 
 
+
+async def load_df_new_all(fp,show_progress=False):
+    """
+    load pandas dataframe from csv file using asyncio
+    Input:
+        fp (str): path to csv file
+        show_progress (bool): show progress bar
+    Output:
+        df (pd.DataFrame): pandas dataframe
+    """
+    
+    def process(fp,data1: io.StringIO):
+        if show_progress:
+            bar = tqdm(unit='row') 
+        dfs=[] 
+        try:
+            if fp.endswith('.csv'):
+                for df in pd.read_csv(data1,chunksize=1024): 
+                    dfs.append(df) 
+                    if show_progress:
+                        bar.update(len(df))
+                    df = pd.concat(dfs,sort=False) 
+                    if show_progress:
+                        bar.close()
+
+            if fp.endswith('.parquet'):
+                for df in pd.read_parquet(data1,chunksize=1024): 
+                    dfs.append(df) 
+                    if show_progress:
+                        bar.update(len(df))
+                df = pd.concat(dfs,sort=False) 
+                if show_progress:
+                    bar.close()
+        except:
+            if fp.endswith('.parquet'):
+                from pyarrow.parquet import ParquetFile
+                import pyarrow as pa
+
+                pf = ParquetFile(data1)
+                rows = next(pf.iter_batches(batch_size=1000))
+                df = pa.Table.from_batches([rows]).to_pandas()
+        return df 
+    data1 = await read_txt(fp) 
+    return process(fp , io.StringIO(data1)) 
+    
+    
+    
+
 def load_any_df(file_path,show_progress=True,literal_ast_columns=None ,logger = None):
     """
     Loading any pandas dfload function
@@ -84,10 +132,11 @@ def load_any_df(file_path,show_progress=True,literal_ast_columns=None ,logger = 
     if type(file_path) == pd.DataFrame:
         return file_path
     try:
-        if file_path.endswith('.csv'):
-            df = asyncio.run(load_df_new(file_path,show_progress=show_progress))
-        elif file_path.endswith('.parquet'):
-            df = asyncio.run(load_df_new_parquet(file_path,show_progress=show_progress))
+        df = asyncio.run(load_df_new_all(file_path,show_progress=show_progress))
+        #if file_path.endswith('.csv'):
+        #    df = asyncio.run(load_df_new(file_path,show_progress=show_progress))
+        #elif file_path.endswith('.parquet'):
+        #    df = asyncio.run(load_df_new_parquet(file_path,show_progress=show_progress))
         if logger:
             logger.info("Loaded dataframe from {} using asyncio".format(file_path))
     except:
