@@ -4,6 +4,7 @@
 from setuptools import setup,find_packages,find_namespace_packages
 from mb_pandas.src.version import version
 
+
 setup(
     name="mb_pandas",
     version=version,
