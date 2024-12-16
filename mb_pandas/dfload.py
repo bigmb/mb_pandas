@@ -52,14 +52,21 @@ async def load_df_async(filepath: str,
     """
     def process_csv(data: io.StringIO, progress_bar: Optional[tqdm] = None) -> pd.DataFrame:
         dfs = []
-        for chunk in pd.read_csv(data, chunksize=1024):
+        chunk_iter = pd.read_csv(data, chunksize=1024)
+        
+        # We need to calculate the total number of rows to set 'total' in tqdm
+        if progress_bar:
+            # Get the total number of rows (this is just an estimate if the file is large)
+            total_rows = sum(1 for _ in open(filepath))  # estimate the total row count
+            progress_bar.total = total_rows
+
+        for chunk in chunk_iter:
             dfs.append(chunk)
             if progress_bar:
-                progress_bar.update(len(chunk))
-        # if progress_bar:
-        #     progress_bar.close()
+                progress_bar.update(len(chunk))  # Update the progress bar with the number of rows read
+        if progress_bar:
+            progress_bar.close()
         return pd.concat(dfs, sort=False)
-
     
     def process_parquet(data: str) -> pd.DataFrame:
         try:
