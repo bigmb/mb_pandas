@@ -85,7 +85,7 @@ async def load_df_async(filepath: str,
         return df
     
     except Exception as e:
-        if show_progress and progress_bar:
+        if progress_bar:
             progress_bar.close()
         raise ValueError(f"Error loading file {filepath}: {str(e)}")
 
