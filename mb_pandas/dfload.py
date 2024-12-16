@@ -18,19 +18,19 @@ __all__ = ['load_any_df']
 async def read_txt(filepath: str, size: Optional[int] = None) -> str:
     """
     Asynchronously read text from a file.
-    
+
     Args:
         filepath: Path to the file to read
         size: Optional number of bytes to read
-        
+
     Returns:
         str: Content of the file
     """
     try:
         with open(filepath, mode="rt") as f:
             if size:
-                return await f.read(size)
-            return await f.read()
+                return f.read(size)
+            return f.read()
     except FileNotFoundError:
         raise FileNotFoundError(f"File not found: {filepath}")
     except IOError as e:
@@ -51,13 +51,14 @@ async def load_df_async(filepath: str,
         pd.DataFrame: Loaded DataFrame
     """
     def process_csv(data: io.StringIO, progress_bar: Optional[tqdm] = None) -> pd.DataFrame:
-        dfs=[] 
-        for df in pd.read_csv(data,chunksize=1024): 
-            dfs.append(df) 
+        dfs = []
+        for chunk in pd.read_csv(data, chunksize=1024):
+            dfs.append(chunk)
             if progress_bar:
-                progress_bar.update(len(df))
-            df = pd.concat(dfs,sort=False) 
-        return df 
+                progress_bar.update(len(chunk))
+        if progress_bar:
+            progress_bar.close()
+        return pd.concat(dfs, sort=False)
 
     
     def process_parquet(data: str) -> pd.DataFrame:
@@ -71,7 +72,7 @@ async def load_df_async(filepath: str,
             return table.to_pandas()
     
     try:
-        progress_bar = tqdm(unit='row') if show_progress else None
+        progress_bar = tqdm(unit='row', disable=not show_progress)
         
         if filepath.endswith('.csv'):
             data = await read_txt(filepath)
@@ -80,14 +81,11 @@ async def load_df_async(filepath: str,
             df = process_parquet(filepath)
         else:
             raise ValueError(f"Unsupported file format: {filepath}")
-        
-        if progress_bar:
-            progress_bar.close()
-            
+
         return df
     
     except Exception as e:
-        if progress_bar:
+        if show_progress and progress_bar:
             progress_bar.close()
         raise ValueError(f"Error loading file {filepath}: {str(e)}")
 
