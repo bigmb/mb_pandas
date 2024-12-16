@@ -37,7 +37,7 @@ pip install mb_pandas
 Functions for DataFrame transformations and merging operations.
 
 ```python
-from mb_pandas import merge_chunk, merge_dask, check_null, remove_unnamed
+from mb_pandas.transform import merge_chunk, merge_dask, check_null, remove_unnamed
 
 # Merge large DataFrames in chunks
 result = merge_chunk(df1, df2, chunksize=10000)

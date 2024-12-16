@@ -9,7 +9,6 @@ from typing import Optional, List, Union, Any
 import pandas as pd
 import asyncio
 import io
-from tqdm import tqdm
 from ast import literal_eval
 from pyarrow.parquet import ParquetFile
 
@@ -37,29 +36,23 @@ async def read_txt(filepath: str, size: Optional[int] = None) -> str:
         raise IOError(f"Error reading file {filepath}: {str(e)}")
 
 async def load_df_async(filepath: str, 
-                       show_progress: bool = False,
                        chunk_size: int = 1024) -> pd.DataFrame:
     """
     Load a DataFrame asynchronously from CSV or Parquet file.
     
     Args:
         filepath: Path to the input file
-        show_progress: Whether to show a progress bar
         chunk_size: Number of rows to read per chunk
         
     Returns:
         pd.DataFrame: Loaded DataFrame
     """
-    def process_csv(data: io.StringIO, progress_bar: Optional[tqdm] = None) -> pd.DataFrame:
+    def process_csv(data: io.StringIO) -> pd.DataFrame:
         dfs = []
         chunk_iter = pd.read_csv(data, chunksize=1024)
             
         for chunk in chunk_iter:
             dfs.append(chunk)
-            if progress_bar!=None:
-                progress_bar.update(len(chunk))  
-        if progress_bar:
-            progress_bar.close()
         return pd.concat(dfs, sort=False)
     
     def process_parquet(data: str) -> pd.DataFrame:
@@ -73,14 +66,10 @@ async def load_df_async(filepath: str,
             return table.to_pandas()
     
     try:
-        if show_progress:
-            progress_bar = tqdm(unit='row')
-        else:
-            progress_bar = None
         
         if filepath.endswith('.csv'):
             data = await read_txt(filepath)
-            df = process_csv(io.StringIO(data), progress_bar=progress_bar)
+            df = process_csv(io.StringIO(data))
         elif filepath.endswith('.parquet'):
             df = process_parquet(filepath)
         else:
@@ -89,12 +78,10 @@ async def load_df_async(filepath: str,
         return df
     
     except Exception as e:
-        if progress_bar:
-            progress_bar.close()
+
         raise ValueError(f"Error loading file {filepath}: {str(e)}")
 
 def load_any_df(file_path: Union[str, pd.DataFrame],
-                show_progress: bool = True,
                 literal_ast_columns: Optional[List[str]] = None,
                 logger: Optional[Any] = None) -> pd.DataFrame:
     """
@@ -125,7 +112,7 @@ def load_any_df(file_path: Union[str, pd.DataFrame],
         if logger:
             logger.info(f"Loading DataFrame from {file_path}")
         
-        df = asyncio.run(load_df_async(file_path, show_progress=show_progress))
+        df = asyncio.run(load_df_async(file_path))
         
         # Remove unnamed columns
         df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
