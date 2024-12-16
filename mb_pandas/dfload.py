@@ -51,12 +51,14 @@ async def load_df_async(filepath: str,
         pd.DataFrame: Loaded DataFrame
     """
     def process_csv(data: io.StringIO, progress_bar: Optional[tqdm] = None) -> pd.DataFrame:
-        dfs = []
-        for chunk in pd.read_csv(data, chunksize=chunk_size):
-            dfs.append(chunk)
+        dfs=[] 
+        for df in pd.read_csv(data,chunksize=1024): 
+            dfs.append(df) 
             if progress_bar:
-                progress_bar.update(len(chunk))
-        return pd.concat(dfs, ignore_index=True)
+                progress_bar.update(len(df))
+            df = pd.concat(dfs,sort=False) 
+        return df 
+
     
     def process_parquet(data: str) -> pd.DataFrame:
         try:
