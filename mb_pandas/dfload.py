@@ -9,7 +9,7 @@ from typing import Optional, List, Union, Any
 import pandas as pd
 import asyncio
 import io
-from tqdm.asyncio import tqdm
+from tqdm import tqdm
 from ast import literal_eval
 from pyarrow.parquet import ParquetFile
 
