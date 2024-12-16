@@ -56,7 +56,7 @@ async def load_df_async(filepath: str,
             
         for chunk in chunk_iter:
             dfs.append(chunk)
-            if progress_bar:
+            if progress_bar!=None:
                 progress_bar.update(len(chunk))  
         if progress_bar:
             progress_bar.close()
@@ -73,11 +73,14 @@ async def load_df_async(filepath: str,
             return table.to_pandas()
     
     try:
-        progress_bar = tqdm(unit='row', disable=not show_progress)
+        if show_progress:
+            progress_bar = tqdm(unit='row')
+        else:
+            progress_bar = None
         
         if filepath.endswith('.csv'):
             data = await read_txt(filepath)
-            df = process_csv(io.StringIO(data), progress_bar)
+            df = process_csv(io.StringIO(data), progress_bar=progress_bar)
         elif filepath.endswith('.parquet'):
             df = process_parquet(filepath)
         else:
