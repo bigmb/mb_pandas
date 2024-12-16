@@ -56,8 +56,8 @@ async def load_df_async(filepath: str,
             dfs.append(chunk)
             if progress_bar:
                 progress_bar.update(len(chunk))
-        if progress_bar:
-            progress_bar.close()
+        # if progress_bar:
+        #     progress_bar.close()
         return pd.concat(dfs, sort=False)
 
     
