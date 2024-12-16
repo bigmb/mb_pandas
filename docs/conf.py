@@ -22,7 +22,7 @@ copyright = '2022, Malav'
 author = 'Malav'
 
 # The full version, including alpha/beta/rc tags
-from mb_pandas.src.version import version
+from mb_pandas.version import version
 release = version
 
 
