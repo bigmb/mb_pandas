@@ -60,7 +60,7 @@ df = rename_columns(data,'labels2','labels')
 Asynchronous DataFrame loading utilities.
 
 ```python
-from mb_pandas import load_any_df
+from mb_pandas.dfload import load_any_df
 
 # Load any supported file format
 df = load_any_df('data.csv')
