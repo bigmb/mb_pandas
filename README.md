@@ -37,7 +37,7 @@ pip install mb_pandas
 Functions for DataFrame transformations and merging operations.
 
 ```python
-from mb_pandas.transform import merge_chunk, merge_dask, check_null, remove_unnamed
+from mb_pandas.transform import merge_chunk, merge_dask, check_null, remove_unnamed,rename_columns
 
 # Merge large DataFrames in chunks
 result = merge_chunk(df1, df2, chunksize=10000)
@@ -50,6 +50,9 @@ df = check_null('data.csv', fillna=True)
 
 # Remove unnamed columns
 df = remove_unnamed(df)
+
+# Rename column
+df = rename_columns(data,'labels2','labels')
 ```
 
 ### dfload.py
@@ -60,8 +63,8 @@ Asynchronous DataFrame loading utilities.
 from mb_pandas import load_any_df
 
 # Load any supported file format
-df = load_any_df('data.csv', show_progress=True)
-df = load_any_df('data.parquet', show_progress=True)
+df = load_any_df('data.csv')
+df = load_any_df('data.parquet')
 
 # Convert string columns to Python objects
 df = load_any_df('data.csv', literal_ast_columns=['json_col'])
@@ -86,7 +89,7 @@ result = srun(async_function, *args)
 Data type conversion utilities.
 
 ```python
-from mb_pandas import convert_string_to_list, convert_string_to_dict, convert_string_to_type
+from mb_pandas.convert_data import convert_string_to_list, convert_string_to_dict, convert_string_to_type
 
 # Convert string representations to lists
 df = convert_string_to_list(df, 'list_column')
@@ -103,7 +106,7 @@ df = convert_string_to_type(df, 'number_column', int)
 DataFrame profiling and comparison utilities.
 
 ```python
-from mb_pandas import create_profile, profile_compare
+from mb_pandas.profiler import create_profile, profile_compare
 
 # Generate profiling report
 create_profile(df, 'report.html', target=['target_column'])
