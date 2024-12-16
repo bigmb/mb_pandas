@@ -9,7 +9,7 @@ from typing import Optional, List, Union, Any
 import pandas as pd
 import asyncio
 import io
-from tqdm import tqdm
+from tqdm.asyncio import tqdm
 from ast import literal_eval
 from pyarrow.parquet import ParquetFile
 
@@ -28,7 +28,9 @@ async def read_txt(filepath: str, size: Optional[int] = None) -> str:
     """
     try:
         with open(filepath, mode="rt") as f:
-            return f.read(size)
+            if size:
+                return await f.read(size)
+            return await f.read()
     except FileNotFoundError:
         raise FileNotFoundError(f"File not found: {filepath}")
     except IOError as e:
