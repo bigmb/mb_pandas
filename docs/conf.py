@@ -22,7 +22,7 @@ copyright = '2022, Malav'
 author = 'Malav'
 
 # The full version, including alpha/beta/rc tags
-from mb_pandas.version import version
+from mb.pandas.version import version
 release = version
 
 
@@ -40,7 +40,7 @@ extensions = [
 ]
 
 # sphinx-autoapi
-autoapi_dirs = ["../mb_pandas"]
+autoapi_dirs = ["../mb/pandas"]
 autoapi_python_use_implicit_namespaces = True
 
 master_doc = 'index'

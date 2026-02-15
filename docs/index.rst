@@ -11,7 +11,7 @@ Welcome to mb_pandas's documentation!
    :caption: Contents:
 	     
    install
-   autoapi/mb_pandas/src/index
+   autoapi/mb/pandas
 
    
 Indices and tables

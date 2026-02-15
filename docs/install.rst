@@ -3,7 +3,7 @@ Installation
 
 Install via pip::
 
-    pip3 install mb-pandas
+    pip3 install mb_pandas
 
 Build from source::
 
