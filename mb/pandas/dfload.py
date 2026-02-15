@@ -11,6 +11,7 @@ import asyncio
 import io
 from ast import literal_eval
 from pyarrow.parquet import ParquetFile
+from mb.utils.logging import logg
 
 __all__ = ['load_any_df']
 
@@ -66,7 +67,6 @@ async def load_df_async(filepath: str,
             return table.to_pandas()
     
     try:
-        
         if filepath.endswith('.csv'):
             data = await read_txt(filepath)
             df = process_csv(io.StringIO(data))
@@ -109,8 +109,7 @@ def load_any_df(file_path: Union[str, pd.DataFrame],
     
     try:
         # Load the DataFrame
-        if logger:
-            logger.info(f"Loading DataFrame from {file_path}")
+        logg.info(f"Loading DataFrame from {file_path}",logger=logger)
         
         df = asyncio.run(load_df_async(file_path))
         
@@ -123,22 +122,18 @@ def load_any_df(file_path: Union[str, pd.DataFrame],
                 if col not in df.columns:
                     raise KeyError(f"Column '{col}' not found in DataFrame")
                 
-                if logger:
-                    logger.info(f"Converting column '{col}' using literal_eval")
+                logg.info(f"Converting column '{col}' using literal_eval",logger=logger)
                 
                 try:
                     df[col] = df[col].apply(literal_eval)
                 except (ValueError, SyntaxError) as e:
-                    if logger:
-                        logger.error(f"Error converting column '{col}': {str(e)}")
+                    logg.error(f"Error converting column '{col}': {str(e)}",logger=logger)
                     raise ValueError(f"Error converting column '{col}' using literal_eval: {str(e)}")
         
-        if logger:
-            logger.info(f"Successfully loaded DataFrame with shape {df.shape}")
+        logg.info(f"Successfully loaded DataFrame with shape {df.shape}",logger=logger)
         
         return df
     
     except Exception as e:
-        if logger:
-            logger.error(f"Error loading file: {str(e)}")
+        logg.error(f"Error loading file: {str(e)}",logger=logger)
         raise ValueError(f"Error loading file: {str(e)}")

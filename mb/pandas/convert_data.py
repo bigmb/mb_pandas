@@ -9,6 +9,7 @@ from typing import Union, List, Optional, Any, Type
 import ast
 import pandas as pd
 import json
+from mb.utils.logging import logg
 
 __all__ = ['convert_string_to_list', 'convert_string_to_dict', 'convert_string_to_type']
 
@@ -42,8 +43,7 @@ def convert_string_to_list(df: pd.DataFrame,
     result = df.copy()
     
     try:
-        if logger:
-            logger.info(f"Converting column '{column}' from string to list")
+        logg.info(f"Converting column '{column}' from string to list", logger=logger)
         
         # Convert strings to lists using ast.literal_eval
         result[column] = result[column].apply(lambda x: (
@@ -58,14 +58,12 @@ def convert_string_to_list(df: pd.DataFrame,
             problematic_rows = result.index[non_list_mask].tolist()
             raise ValueError(f"Conversion failed for rows: {problematic_rows}")
         
-        if logger:
-            logger.info(f"Successfully converted {len(result)} rows")
+        logg.info(f"Successfully converted {len(result)} rows", logger=logger)
         
         return result
     
     except Exception as e:
-        if logger:
-            logger.error(f"Error converting column '{column}': {str(e)}")
+        logg.error(f"Error converting column '{column}': {str(e)}", logger=logger)
         raise
 
 def convert_string_to_dict(df: pd.DataFrame,
@@ -97,8 +95,7 @@ def convert_string_to_dict(df: pd.DataFrame,
     result = df.copy()
     
     try:
-        if logger:
-            logger.info(f"Converting column '{column}' from string to dict")
+        logg.info(f"Converting column '{column}' from string to dict", logger=logger)
         
         # Try both ast.literal_eval and json.loads for maximum compatibility
         def safe_convert(x):
@@ -124,14 +121,12 @@ def convert_string_to_dict(df: pd.DataFrame,
             problematic_rows = result.index[non_dict_mask].tolist()
             raise ValueError(f"Conversion failed for rows: {problematic_rows}")
         
-        if logger:
-            logger.info(f"Successfully converted {len(result)} rows")
+        logg.info(f"Successfully converted {len(result)} rows", logger=logger)
         
         return result
     
     except Exception as e:
-        if logger:
-            logger.error(f"Error converting column '{column}': {str(e)}")
+        logg.error(f"Error converting column '{column}': {str(e)}", logger=logger)
         raise
 
 def convert_string_to_type(df: pd.DataFrame,
@@ -165,8 +160,7 @@ def convert_string_to_type(df: pd.DataFrame,
     result = df.copy()
     
     try:
-        if logger:
-            logger.info(f"Converting column '{column}' to {target_type.__name__}")
+        logg.info(f"Converting column '{column}' to {target_type.__name__}", logger=logger)
         
         def safe_convert(x):
             if pd.isnull(x):
@@ -180,12 +174,10 @@ def convert_string_to_type(df: pd.DataFrame,
         
         result[column] = result[column].apply(safe_convert)
         
-        if logger:
-            logger.info(f"Successfully converted {len(result)} rows")
+        logg.info(f"Successfully converted {len(result)} rows", logger=logger)
         
         return result
     
     except Exception as e:
-        if logger:
-            logger.error(f"Error converting column '{column}': {str(e)}")
+        logg.error(f"Error converting column '{column}': {str(e)}", logger=logger)
         raise Exception(f"Error converting column '{column}': {str(e)}")

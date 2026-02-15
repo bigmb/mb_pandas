@@ -8,6 +8,7 @@ of pandas DataFrames using pandas-profiling.
 from typing import Union, List, Optional, Any
 import pandas as pd
 from pathlib import Path
+from mb.utils.logging import logg
 
 __all__ = ['create_profile', 'profile_compare']
 
@@ -53,17 +54,15 @@ def create_profile(df: pd.DataFrame,
     # Sample large DataFrames
     original_size = len(df)
     if original_size > sample_size:
-        if logger:
-            logger.warning(f'DataFrame size ({original_size}) exceeds limit ({sample_size})')
-            logger.info(f'Sampling {sample_size} rows')
+        logg.warning(f'DataFrame size ({original_size}) exceeds limit ({sample_size})',logger=logger)
+        logg.info(f'Sampling {sample_size} rows',logger=logger)
         df = df.sample(n=sample_size, random_state=42)
         minimal = True
     
     try:
-        if logger:
-            logger.info('Generating profile report')
-            if minimal:
-                logger.info('Using minimal configuration for better performance')
+        logg.info('Generating profile report',logger=logger)
+        if minimal:
+            logg.info('Using minimal configuration for better performance',logger=logger)
         
         # Configure profile report
         profile = ProfileReport(
@@ -77,20 +76,17 @@ def create_profile(df: pd.DataFrame,
         
         # Set target columns for correlation analysis
         if target:
-            if logger:
-                logger.info(f'Analyzing correlations for target columns: {target}')
+            logg.info(f'Analyzing correlations for target columns: {target}',logger=logger)
             profile.config.interactions.targets = target
         
         # Save report
         profile_path = Path(profile_name)
         profile.to_file(output_file=profile_path)
         
-        if logger:
-            logger.info(f'Profile report saved to: {profile_path.absolute()}')
+        logg.info(f'Profile report saved to: {profile_path.absolute()}',logger=logger)
     
     except Exception as e:
-        if logger:
-            logger.error(f'Error generating profile report: {str(e)}')
+        logg.error(f'Error generating profile report: {str(e)}',logger=logger)
         raise
 
 def profile_compare(df1: pd.DataFrame,
@@ -129,10 +125,9 @@ def profile_compare(df1: pd.DataFrame,
         raise TypeError("Both inputs must be pandas DataFrames")
     
     try:
-        if logger:
-            logger.info('Generating comparison report')
-            logger.info(f'DataFrame 1 shape: {df1.shape}')
-            logger.info(f'DataFrame 2 shape: {df2.shape}')
+        logg.info('Generating comparison report',logger=logger)
+        logg.info(f'DataFrame 1 shape: {df1.shape}',logger=logger)
+        logg.info(f'DataFrame 2 shape: {df2.shape}',logger=logger)
         
         # Generate profiles for both DataFrames
         profile1 = ProfileReport(
@@ -150,17 +145,14 @@ def profile_compare(df1: pd.DataFrame,
         )
         
         # Generate comparison report
-        if logger:
-            logger.info('Comparing profiles')
+        logg.info('Comparing profiles',logger=logger)
         
         comparison = profile1.compare(profile2)
         comparison_path = Path(profile_name)
         comparison.to_file(comparison_path)
         
-        if logger:
-            logger.info(f'Comparison report saved to: {comparison_path.absolute()}')
+        logg.info(f'Comparison report saved to: {comparison_path.absolute()}',logger=logger)
     
     except Exception as e:
-        if logger:
-            logger.error(f'Error generating comparison report: {str(e)}')
+        logg.error(f'Error generating comparison report: {str(e)}',logger=logger)
         raise

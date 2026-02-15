@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import cv2
 from .dfload import load_any_df
+from mb.utils.logging import logg
 
 __all__ = ['check_null', 'remove_unnamed', 'rename_columns', 'check_drop_duplicates', 'get_dftype', 'merge_chunk', 'merge_dask']
 
@@ -45,9 +46,8 @@ def merge_chunk(df1: pd.DataFrame,
     # Create chunks
     list_df = [df2[i:i+chunksize] for i in range(0, df2.shape[0], chunksize)]
     
-    if logger:
-        logger.info(f'Size of chunk: {chunksize}')
-        logger.info(f'Number of chunks: {len(list_df)}')
+    logg.info(f'Size of chunk: {chunksize}',logger=logger)
+    logg.info(f'Number of chunks: {len(list_df)}',logger=logger)
     
     # Process first chunk
     result = pd.merge(df1, list_df[0], **kwargs)
@@ -84,8 +84,7 @@ def merge_dask(df1: pd.DataFrame,
     if not isinstance(df1, pd.DataFrame) or not isinstance(df2, pd.DataFrame):
         raise TypeError("Both inputs must be pandas DataFrames")
     
-    if logger:
-        logger.info('Converting pandas DataFrames to Dask DataFrames')
+    logg.info('Converting pandas DataFrames to Dask DataFrames',logger=logger)
     
     # Optimize number of partitions based on DataFrame size
     npartitions = max(2, min(32, df1.shape[0] // 100000))
@@ -95,13 +94,11 @@ def merge_dask(df1: pd.DataFrame,
 
     merged_ddf = dd.merge(ddf1, ddf2, **kwargs)
     
-    if logger:
-        logger.info('Computing merge operation')
+    logg.info('Computing merge operation',logger=logger)
     
     merged_df = merged_ddf.compute()
     
-    if logger:
-        logger.info('Merged DataFrame and converted back to pandas DataFrame')
+    logg.info('Merged DataFrame and converted back to pandas DataFrame',logger=logger)
     
     return merged_df
 
@@ -120,33 +117,28 @@ def check_null(file_path: str,
         pd.DataFrame: Processed DataFrame
         
     """
-    if logger:
-        logger.info(f'Loading file: {file_path}')
+    logg.info(f'Loading file: {file_path}',logger=logger)
     
     df = load_any_df(file_path)
     
-    if logger:
-        logger.info(f'File shape: {df.shape}')
-        logger.info(f'File columns: {list(df.columns)}')
-        logger.info('Checking Null values')
+    logg.info(f'File shape: {df.shape}',logger=logger)
+    logg.info(f'File columns: {list(df.columns)}',logger=logger)
+    logg.info('Checking Null values',logger=logger)
     
     for column in df.columns:
         null_mask = df[column].isnull()
         null_count = null_mask.sum()
         
         if null_count > 0:
-            if logger:
-                logger.warning(f'Column {column} has {null_count} null values')
+            logg.warning(f'Column {column} has {null_count} null values',logger=logger)
             
             if fillna:
                 if pd.api.types.is_numeric_dtype(df[column]):
                     fill_value = 0 if pd.api.types.is_integer_dtype(df[column]) else 0.0
-                    if logger:
-                        logger.info(f'Filling null values with {fill_value}')
+                    logg.info(f'Filling null values with {fill_value}',logger=logger)
                     df[column].fillna(fill_value, inplace=True)
                 else:
-                    if logger:
-                        logger.info(f'Skipping non-numeric column {column}')
+                    logg.info(f'Skipping non-numeric column {column}',logger=logger)
     
     return df
 
@@ -165,16 +157,14 @@ def remove_unnamed(df: pd.DataFrame,
     if not isinstance(df, pd.DataFrame):
         raise TypeError("Input must be a pandas DataFrame")
         
-    if logger:
-        logger.info('Removing unnamed columns')
+    logg.info('Removing unnamed columns',logger=logger)
     
     unnamed_pattern = '^Unnamed'
     unnamed_cols = df.columns[df.columns.str.contains(unnamed_pattern)].tolist()
     
     if unnamed_cols:
         df = df.drop(columns=unnamed_cols)
-        if logger:
-            logger.info(f'Removed columns: {unnamed_cols}')
+        logg.info(f'Removed columns: {unnamed_cols}',logger=logger)
     
     return df
 
@@ -202,14 +192,12 @@ def rename_columns(df: pd.DataFrame,
         raise TypeError("Input must be a pandas DataFrame")
         
     if old_column not in df.columns:
-        if logger:
-            logger.error(f'Column {old_column} not in DataFrame')
+        logg.error(f'Column {old_column} not in DataFrame',logger=logger)
         raise KeyError(f'Column {old_column} not in DataFrame')
     
     df = df.rename(columns={old_column: new_column})
     
-    if logger:
-        logger.info(f'Column {old_column} renamed to {new_column}')
+    logg.info(f'Column {old_column} renamed to {new_column}',logger=logger)
     
     return df
 
@@ -240,28 +228,22 @@ def check_drop_duplicates(df: pd.DataFrame,
     if missing_cols:
         raise KeyError(f"Columns not found in DataFrame: {missing_cols}")
     
-    if logger:
-        logger.info(f'Checking duplicates for columns: {columns}')
+    logg.info(f'Checking duplicates for columns: {columns}',logger=logger)
     
     duplicates = df[df.duplicated(subset=columns, keep=False)]
     duplicate_count = len(duplicates)
     
     if duplicate_count > 0:
-        if logger:
-            logger.warning(f'Found {duplicate_count} duplicate rows')
+        logg.warning(f'Found {duplicate_count} duplicate rows',logger=logger)
         
         if drop:
-            if logger:
-                logger.info('Removing duplicates')
+            logg.info('Removing duplicates',logger=logger)
             df = df.drop_duplicates(subset=columns)
-            if logger:
-                logger.info(f'Removed {duplicate_count} duplicate rows')
+            logg.info(f'Removed {duplicate_count} duplicate rows',logger=logger)
         else:
-            if logger:
-                logger.info('Duplicate removal not requested (drop=False)')
+            logg.info('Duplicate removal not requested (drop=False)',logger=logger)
     else:
-        if logger:
-            logger.info('No duplicates found')
+        logg.info('No duplicates found',logger=logger)
     
     return df
 

@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from setuptools import setup,find_packages
+from setuptools import setup,find_packages,find_namespace_packages
 import os
 
 VERSION_FILE = os.path.join(os.path.dirname(__file__), "VERSION.txt")
 print(VERSION_FILE)
+
 setup(
-    name="mb_pandas",
-    description="Basic Pandas functions packag",
+    name="mb_base",
+    description="Pandas Package for mb.* packages",
     author=["Malav Bateriwala"],
-    packages=find_packages(),
+    packages=find_namespace_packages(include=["mb.*"]),
     #packages=find_packages(),
-    scripts=['scripts/df_profile','scripts/df_view'],
-    install_requires=[],
+    install_requires=[
+        "mb_utils",],
     setup_requires=["setuptools-git-versioning<2"],
     python_requires='>=3.8',
     setuptools_git_versioning={
