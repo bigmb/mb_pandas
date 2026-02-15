@@ -8,7 +8,7 @@ VERSION_FILE = os.path.join(os.path.dirname(__file__), "VERSION.txt")
 print(VERSION_FILE)
 
 setup(
-    name="mb_base",
+    name="mb_pandas",
     description="Pandas Package for mb.* packages",
     author=["Malav Bateriwala"],
     packages=find_namespace_packages(include=["mb.*"]),
