@@ -10,7 +10,6 @@ import pandas as pd
 import asyncio
 import io
 from ast import literal_eval
-from pyarrow.parquet import ParquetFile
 from mb.utils.logging import logg
 
 __all__ = ['load_any_df']
@@ -37,13 +36,15 @@ async def read_txt(filepath: str, size: Optional[int] = None) -> str:
         raise IOError(f"Error reading file {filepath}: {str(e)}")
 
 async def load_df_async(filepath: str, 
-                       chunk_size: int = 1024) -> pd.DataFrame:
+                       chunk_size: int = 1024,
+                       logger: Optional[Any] = None) -> pd.DataFrame:
     """
     Load a DataFrame asynchronously from CSV or Parquet file.
     
     Args:
         filepath: Path to the input file
         chunk_size: Number of rows to read per chunk
+        logger: Optional logger instance for logging operations
         
     Returns:
         pd.DataFrame: Loaded DataFrame
@@ -62,9 +63,10 @@ async def load_df_async(filepath: str,
             return pd.read_parquet(data)
         except Exception:
             # Fallback to pyarrow for problematic files
-            pf = ParquetFile(data)
-            table = pf.read()
-            return table.to_pandas()
+            logg.warning(f"Standard parquet reading failed for {data}, pyarrow fallback disabled",logger)
+            # pf = ParquetFile(data)
+            # table = pf.read()
+            # return table.to_pandas()
     
     try:
         if filepath.endswith('.csv'):
