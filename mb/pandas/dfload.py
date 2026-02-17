@@ -8,6 +8,7 @@ using asynchronous I/O operations for improved performance.
 from typing import Optional, List, Union, Any
 import pandas as pd
 import asyncio
+import concurrent.futures
 import io
 from ast import literal_eval
 from mb.utils.logging import logg
@@ -61,12 +62,10 @@ async def load_df_async(filepath: str,
         try:
             # Try standard parquet reading first
             return pd.read_parquet(data)
-        except Exception:
+        except Exception as e:
             # Fallback to pyarrow for problematic files
             logg.warning(f"Standard parquet reading failed for {data}, pyarrow fallback disabled",logger)
-            # pf = ParquetFile(data)
-            # table = pf.read()
-            # return table.to_pandas()
+            raise ValueError(f"Failed to read parquet file {data}: {str(e)}")
     
     try:
         if filepath.endswith('.csv'):
@@ -113,7 +112,17 @@ def load_any_df(file_path: Union[str, pd.DataFrame],
         # Load the DataFrame
         logg.info(f"Loading DataFrame from {file_path}",logger=logger)
         
-        df = asyncio.run(load_df_async(file_path))
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
+            # Event loop already running (e.g. Jupyter notebook)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                df = executor.submit(asyncio.run, load_df_async(file_path)).result()
+        else:
+            df = asyncio.run(load_df_async(file_path))
         
         # Remove unnamed columns
         df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
